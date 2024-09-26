@@ -1,48 +1,38 @@
 <script setup>
 import ProductCard from '@/components/ProductCard.vue'
 import Pagination from '@/components/Pagination.vue';
-import { onBeforeMount, onBeforeUnmount, onBeforeUpdate, onMounted, onUnmounted, onUpdated, ref } from 'vue';
+import { ref, watch } from 'vue';
 
+import axios from 'axios';
+
+const products = ref([]);
 const page = ref(1);
+const limit = ref(8);
 
-function nextPage(){
-  page.value += 1;
+products.value = await axios.get(`http://localhost:3000/products?_page=${page.value}&_per_page=${limit.value}`).then((res) => res.data);
+console.log(products);
+
+watch(page, async () => {
+	products.value = await axios
+					.get(`http://localhost:3000/products?_page=${page.value}&_per_page=${limit.value}`)
+					.then((res) => res.data);
+});
+
+function changePage(newPage){
+	if(newPage < 1) return;
+	if(newPage > products.value.pages) return;
+	page.value = newPage;
 }
 
-onBeforeMount(() => {
-  console.log('Component will be mounted soon');
-});
-
-onMounted(() => {
-  console.log('Component has been mounted');
-});
-
-onBeforeUpdate(() => {
-	console.log('Component will be updated');
-});
-
-onUpdated(()=>{
-  console.log('Component updated');
-});
-
-onBeforeUnmount(() => {
-  console.log('The component will be deleted soon');
-})
-
-onUnmounted(() => {
-  console.log('The component already deleted');
-});
-
 </script>
+
 <template>
 	<main>
-    {{ page }}
-    <button @click="nextPage">Next</button>
 		<div class="product-grid">
-      <ProductCard></ProductCard>
+    		<ProductCard v-for="(product, index) in products.data" :key="index" :product="product"></ProductCard>
 		</div>
 		<div class="pagination">
-			<Pagination></Pagination>
+			<Pagination :page="page" :totalPage="products.pages" @change-page="changePage"></Pagination>
 		</div>
 	</main>
 </template>
