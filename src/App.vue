@@ -4,15 +4,7 @@ import HomeView from './views/HomeView.vue';
 </script>
 
 <template>
-  <!-- <RouterView /> -->
-   <Suspense>
-    <template #default>
-      <HomeView></HomeView>
-    </template>
-    <template #fallback>
-      <p>Loading...</p>
-    </template>
-   </Suspense>
+  <RouterView />
 </template>
 
 <style scoped>
