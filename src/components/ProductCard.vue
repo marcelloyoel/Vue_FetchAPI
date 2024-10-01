@@ -1,13 +1,14 @@
 <script setup>
-import { useRoute } from 'vue-router';
+import { useRouter } from 'vue-router';
 
 const {product} = defineProps({
 	product: Object,
 });
 
-const router = useRoute();
-
+const router = useRouter();
+const productId = product.id;
 function goToProduct(){
+	// router.push({name: "product", params: {id: productId}});
 	router.push(`/product/${product.id}`);
 }
 </script>
