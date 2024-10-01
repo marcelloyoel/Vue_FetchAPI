@@ -1,3 +1,28 @@
+<script>
+import {onMounted, ref} from 'vue';
+import axios from 'axios';
+import {useRoute} from 'vue-router';
+
+const route = useRoute();
+
+const id = route.params.id;
+const product = ref({});
+
+onMounted(() => {
+	fetchData();
+});
+
+async function fetchData(){
+	const API_URL = `http://localhost:3000/products/${id}`;
+	try {
+		const response = await axios.get(API_URL);
+		product.value = response.data;
+	} catch (error) {
+		console.log(error);
+	}
+}
+</script>
+
 <template>
     <div class="product-detail">
         <h2>Product Title</h2>
